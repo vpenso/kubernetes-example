@@ -34,7 +34,7 @@ vm exec $K8S_ADMIN_NODE --root -- kubeadm init \
         --pod-network-cidr=192.168.0.0/16
 ```
 
-This example uses the [kube-router][03] as pod network.
+This example uses the [kube-router][02] as pod network.
 
 ```bash
 # devops user becomes admins
