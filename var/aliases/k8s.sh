@@ -13,12 +13,18 @@ k8s-vm-bootstrap() {
         # set the node name
         vm exec $instance --root hostname $instance
         # disable the firewall
-        vm exec $instance --root -- systemctl disable --now firewalld
+        vm exec $instance --root -- \
+                systemctl disable firewalld ;\
+                systemctl stop firewalld
         # disable SELinux
         vm exec $instance --root setenforce 0
         # disable IPv6
         file=/etc/sysctl.d/ipv6.conf
         vm sync $instance --root $K8S_PATH/$file :$file
+        vm exec $instance --root -- sysctl --load $file
+        # pass bridged IPv4 traffic to iptables’ chains for kube-route
+        file=/etc/sysctl.d/bridge.conf
+        vm exec $instance --root "echo net.bridge.bridge-nf-call-iptables=1 > $file"
         vm exec $instance --root -- sysctl --load $file
         # upload the Kubernetes RPM package repo configuration file
         file=/etc/yum.repos.d/kubernetes.repo

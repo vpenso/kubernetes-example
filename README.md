@@ -30,16 +30,25 @@ vn cmd k8s-vm-bootstrap {}
 
 ```bash
 # initialize the master
-vm exec lxcc01 --root kubeadm init
+vm exec $K8S_ADMIN_NODE --root -- kubeadm init \
+        --pod-network-cidr=192.168.0.0/16
+```
+
+This example uses the [kube-router][03] as pod network.
+
+```bash
 # devops user becomes admins
-vm exec lxcc01 -- '
+vm exec $K8S_ADMIN_NODE -- '
         mkdir -p $HOME/.kube
         sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
         sudo chown $(id -u):$(id -g) $HOME/.kube/config
 '
 # setup the pod network
-vm exec lxcc01 -- kubectl create -f https://git.io/weave-kube
+vm exec $K8S_ADMIN_NODE -- kubectl apply -f https://raw.githubusercontent.com/cloudnativelabs/kube-router/master/daemonset/kubeadm-kuberouter.yaml
+# join all other VM instances with the cluster
+NODES=lxcc0[2-3],lxb00[1-4] vn cmd k8s-vm-join {}
 ```
 
 [00]: https://github.com/vpenso/vm-tools
 [01]: var/aliases/k8s.sh
+[02]: https://github.com/cloudnativelabs/kube-router/blob/master/docs/kubeadm.md
