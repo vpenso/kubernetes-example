@@ -25,12 +25,13 @@ Cf. [var/aliases/k8s.sh][01]
 # initialize the master
 vm exec lxcc01 --root kubeadm init
 # devops user becomes admins
-vm exec lxcm01 -- \
-        mkdir -p $HOME/.kube ; \
-        sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config ; \
+vm exec lxcc01 -- '
+        mkdir -p $HOME/.kube
+        sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
         sudo chown $(id -u):$(id -g) $HOME/.kube/config
+'
 # setup the pod network
-vm exec lxcm01 -- kubectl create -f https://git.io/weave-kube
+vm exec lxcc01 -- kubectl create -f https://git.io/weave-kube
 ```
 
 [00]: https://github.com/vpenso/vm-tools

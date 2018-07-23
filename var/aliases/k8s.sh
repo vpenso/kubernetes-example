@@ -1,6 +1,8 @@
 K8S_VM_IMAGE=centos7
+K8S_ADMIN_NODE=lxcc01
 
-export K8S_IMAGE
+export K8S_IMAGE \
+       K8S_ADMIN_NODE
 
 #
 # install all components comment on all nodes
@@ -27,4 +29,14 @@ k8s-vm-bootstrap() {
                 yum install --assumeyes docker kubelet kubeadm kubectl
         # start services
         vm exec $instance --root -- systemctl enable --now docker kubelet
+}
+
+#
+# print the join command on a node with admin access to the cluster,
+# and execute it on the target VM instance
+#
+k8s-vm-join() {
+        local instance=$1
+        vm exec $instance --root \
+                "$(vm exec $K8S_ADMIN_NODE --root -- kubeadm token create --print-join-command)"
 }
