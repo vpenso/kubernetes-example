@@ -8,6 +8,15 @@ CentOS 7   | Operating system              | <https://centos.org>
 Docker     | Container Management          | <https://docker.com>
 Kubernetes | container Orchestration       | <https://kubernetes.io/>
 
+File                     | Description
+-------------------------|-----------------
+[var/aliases/k8s.sh][01] | Shell functions for Kubernetes
+
+Use the following shell function to install & configure Kubernetes:
+
+- [k8s-vm-bootstrap()][01] - Install Docker and Kubernetes on a given VM instance
+- [k8s-vm-join()][01] - Join a given VM instance with the Kubernetes cluster
+
 This example uses a virtual machine setup with [vm-tools][00]:
 
 ```bash
@@ -16,8 +25,6 @@ vn shadow centos7
 # install Docker nad Kubernetes on all VM instances
 vn cmd k8s-vm-bootstrap {}
 ```
-
-Cf. [var/aliases/k8s.sh][01]
 
 ## Kubernetes
 
