@@ -113,10 +113,23 @@ cronjob "hello" deleted
 
 ### Parallel
 
+Run multiple pods in parallel for a job by configuring following attributes in the specification:
+
+Attribute         | Description
+------------------|--------------------
+.spec.completions | number of pods to complete
+.spec.parallelism | number of pods to run in parallel
+
 ```bash
+# attributes in the spec
+>>> grep -e completion -e parallelism $K8S_SPECS/job-parallel-wait.yaml
+  completions: 6
+  parallelism: 2
+# start the parallel job
 >>> vm exec $K8S_ADMIN_NODE -- \
-        kubectl apply -f ~/job-parallel-wait.yaml
+        kubectl apply -f \~/job-parallel-wait.yaml
 job.batch/wait created
+# watch the status of pods created
 >>> vm exec $K8S_ADMIN_NODE -- \
         kubectl get -w pods -l job-name=wait
 NAME         READY     STATUS    RESTARTS   AGE
@@ -132,8 +145,9 @@ wait-dvbts   0/1       Pending   0         0s
 wait-dvbts   0/1       ContainerCreating   0         0s
 wait-dvbts   1/1       Running   0         5s
 wait-z2zv8   1/1       Running   0         12s
+# clean up
 >>> vm exec $K8S_ADMIN_NODE -- \
-        kubectl delete -f ~/job-parallel-wait.yaml 
+        kubectl delete -f \~/job-parallel-wait.yaml 
 ```
 
 

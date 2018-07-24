@@ -66,7 +66,7 @@ Use the [nginx-deployment.yaml][10] specification for [deployment][05] of multip
 >>> k8s-upload-specs
 # start the deployment
 >>> vm exec $K8S_ADMIN_NODE -- \
-        kubectl create -f ~/nginx-deployment.yaml
+        kubectl create -f \~/nginx-deployment.yaml
 deployment.apps/nginx-deployment created
 # show deployment state
 >>> vm exec $K8S_ADMIN_NODE -- \
@@ -88,7 +88,7 @@ MinReadySeconds:        0
 RollingUpdateStrategy:  25% max unavailable, 25% max surge
 # clean up
 >>> vm exec $K8S_ADMIN_NODE -- \
-        kubectl delete -f ~/nginx-deployment.yaml
+        kubectl delete -f \~/nginx-deployment.yaml
 deployment.apps "nginx-deployment" deleted
 ```
 
