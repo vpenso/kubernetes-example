@@ -65,7 +65,7 @@ Use the [nginx-deployment.yaml][10] specification for [deployment][05] of multip
 # upload all specification from this repo to the admin node
 >>> k8s-upload-specs && vm exec $K8S_ADMIN_NODE
 # deploy the specification
->>> kubectl create -f \~/nginx-deployment.yaml
+>>> kubectl create -f ~/nginx-deployment.yaml
 deployment.apps/nginx-deployment created
 # show deployment state
 >>> kubectl get deployments
@@ -84,21 +84,24 @@ StrategyType:           RollingUpdate
 MinReadySeconds:        0
 RollingUpdateStrategy:  25% max unavailable, 25% max surge
 # clean up
->>> kubectl delete -f \~/nginx-deployment.yaml
+>>> kubectl delete -f ~/nginx-deployment.yaml
 deployment.apps "nginx-deployment" deleted
 ```
 
 Scaling a deployment
 
 ```bash
+# show the number of replicas
 >>> kubectl get replicaset
 NAME                          DESIRED   CURRENT   READY     AGE
 nginx-deployment-67594d6bf6   3         3         3         1h
+# increase the number of replicas
 >>> kubectl scale --replicas=5 deployment/nginx-deployment
 deployment.extensions/nginx-deployment scaled
 >>> kubectl get replicaset
 NAME                          DESIRED   CURRENT   READY     AGE
 nginx-deployment-67594d6bf6   5         5         5         1h
+# show the pods and worker machines
 >>> kubectl --output wide --selector app=nginx get pods
 NAME                                READY     STATUS    RESTARTS   AGE       IP             NODE
 nginx-deployment-67594d6bf6-6vln5   1/1       Running   0          1h        192.168.3.10   lxb003
