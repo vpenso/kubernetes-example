@@ -56,34 +56,37 @@ Alternatives: [minikube](docs/minikube.md), [kubespray][07], [from scratch][08]
 
 ## Usage
 
-Overview of the cluster:
-
-* [Nodes][04] - Worker machine running pods managed by the master components 
-  (services: docker (container run-time), kubelet, kube-proxy)
-* Kubelet - Implements the pod/node API and interfaces with the container run-time
-* Kube-proxy - Manages virtual IPs for pods using `iptables` 
-* [Pod][03] - Group of logically related containers sharing resources
+Start an example [deployment][05] from this repository
 
 ```bash
-kubectl cluster-info                 # addresses of the master and services
-kubectl get nodes [-o wide]          # list all nodes
-kubectl get node <name>              # view single node
-kubectl describe node <name>         # view node details
-kubectl get services                 # list all services
-kubectl get namespaces               # list namespaces
-kubectl get pods                         # all pods
-```
-
-**Controllers** manage (multiple) pods, replication and rollout (self-healing capabilities at cluster scope):
-
-Create a [deployment][05]:
-
-```bash
-# example deployment specification
-spec=https://k8s.io/examples/controllers/nginx-deployment.yaml
-kubectl create -f $spec              # create a deployment from a specification
-kubectl get deployments              # list all deployments
-kubectl describe deployments         # view deployment details
+# upload specification to the admin node
+>>> vm sync lxcc01 $K8S_SPECS/nginx-deployment.yaml :/tmp
+# start the deployment
+>>> vm exec $K8S_ADMIN_NODE -- \
+        kubectl create -f /tmp/nginx-deployment.yaml
+deployment.apps/nginx-deployment created
+# show deployment state
+>>> vm exec $K8S_ADMIN_NODE -- \
+        kubectl get deployments
+NAME               DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+nginx-deployment   3         3         3            3           1m
+# ... in more detail
+>>> vm exec $K8S_ADMIN_NODE -- \
+        kubectl describe deployment nginx-deployment | head -n10
+Name:                   nginx-deployment
+Namespace:              default
+CreationTimestamp:      Tue, 24 Jul 2018 13:00:39 +0200
+Labels:                 app=nginx
+Annotations:            deployment.kubernetes.io/revision=1
+Selector:               app=nginx
+Replicas:               3 desired | 3 updated | 3 total | 3 available | 0 unavailable
+StrategyType:           RollingUpdate
+MinReadySeconds:        0
+RollingUpdateStrategy:  25% max unavailable, 25% max surge
+# clean up
+>>> vm exec $K8S_ADMIN_NODE -- \
+        kubectl delete -f /tmp/nginx-deployment.yaml
+deployment.apps "nginx-deployment" deleted
 ```
 
 [00]: https://github.com/vpenso/vm-tools

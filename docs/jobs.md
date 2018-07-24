@@ -70,6 +70,7 @@ Run jobs on a time-based schedule for creating periodic and recurring tasks:
                 --restart=OnFailure \
                 --image=busybox \
                 -- /bin/sh -c "date; echo Hello from the Kubernetes cluster"
+cronjob.batch/hello created
 # alternativly us a job specification
 >>> curl -L https://k8s.io/examples/application/job/cronjob.yaml
 ```
@@ -109,6 +110,32 @@ hello-1532427660   1         1            17s
 >>> kubectl delete cronjob hello
 cronjob "hello" deleted
 ```
+
+### Parallel
+
+```bash
+>>> cat /tmp/spec.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: wait
+spec:
+  completions: 6
+  parallelism: 2
+  template:
+    metadata:
+      name: wait
+    spec:
+      containers:
+      - name: wait
+        image: busybox
+        command: ["sleep",  "20"]
+      restartPolicy: Never
+>>> kubectl apply -f /tmp/spec.yaml
+
+>>> kubectl delete -f /tmp/spec.yaml 
+```
+
 
 
 [01]: https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/ "kubernetes job controllers"

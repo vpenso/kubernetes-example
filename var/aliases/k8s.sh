@@ -1,8 +1,10 @@
 K8S_VM_IMAGE=centos7
 K8S_ADMIN_NODE=lxcc01
+K8S_SPECS=$K8S_PATH/var/specs
 
 export K8S_IMAGE \
-       K8S_ADMIN_NODE
+       K8S_ADMIN_NODE \
+       K8S_SPECS
 
 #
 # install all components comment on all nodes
