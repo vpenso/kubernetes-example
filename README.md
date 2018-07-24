@@ -28,6 +28,8 @@ vn cmd k8s-vm-bootstrap {}
 
 ## Deployment
 
+Deployment in a single VM instance, cf. [minikube](docs/minikube.md).
+
 [kubeadm][06] provides a simple CLI to create single master Kubernetes clusters:
 
 ```bash
@@ -52,11 +54,11 @@ vm exec $K8S_ADMIN_NODE --
 NODES=lxcc0[2-3],lxb00[1-4] vn cmd k8s-vm-join {}
 ```
 
-Alternatives: [minikube](docs/minikube.md), [kubespray][07], [from scratch][08]
+Alternatives: [kubespray][07], [from scratch][08]
 
 ## Usage
 
-Start an example [deployment][05] from this repository
+Use the [nginx-deployment.yaml][10] specification for [deployment][05] of multiple [Nginx][11] servers:
 
 ```bash
 # upload specification to the admin node
@@ -99,3 +101,5 @@ deployment.apps "nginx-deployment" deleted
 [07]: https://github.com/kubernetes-incubator/kubespray "kubespray on github"
 [08]: https://kubernetes.io/docs/setup/scratch "kubernetes from scratch documentation"
 [09]: https://github.com/kelseyhightower/kubernetes-the-hard-way "kubernetes the hard way"
+[10]: var/specs/nginx-deployment.yaml
+[11]: http://nginx.org/en/docs/
