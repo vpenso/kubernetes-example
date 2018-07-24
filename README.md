@@ -4,9 +4,9 @@ List of components used in this project:
 
 Component  | Description                   | Cf.
 -----------|-------------------------------|-----------------------
-CentOS 7   | Operating system              | <https://centos.org>
-Docker     | Container Management          | <https://docker.com>
-Kubernetes | container Orchestration       | <https://kubernetes.io/>
+CentOS 7   | Operating System              | <https://centos.org>
+Docker     | Container Run-time          | <https://docker.com>
+Kubernetes | Container Orchestration       | <https://kubernetes.io/>
 
 File                     | Description
 -------------------------|-----------------
@@ -32,8 +32,8 @@ vn cmd k8s-vm-bootstrap {}
 
 ```bash
 # initialize the master
-vm exec $K8S_ADMIN_NODE --root -- kubeadm init \
-        --pod-network-cidr=192.168.0.0/16
+vm exec $K8S_ADMIN_NODE --root -- \
+        kubeadm init --pod-network-cidr=192.168.0.0/16
 ```
 
 This example uses the [kube-router][02] as pod network.
@@ -46,12 +46,13 @@ vm exec $K8S_ADMIN_NODE -- '
         sudo chown $(id -u):$(id -g) $HOME/.kube/config
 '
 # setup the pod network
-vm exec $K8S_ADMIN_NODE -- kubectl apply -f https://raw.githubusercontent.com/cloudnativelabs/kube-router/master/daemonset/kubeadm-kuberouter.yaml
+vm exec $K8S_ADMIN_NODE -- 
+        kubectl apply -f https://raw.githubusercontent.com/cloudnativelabs/kube-router/master/daemonset/kubeadm-kuberouter.yaml
 # join all other VM instances with the cluster
 NODES=lxcc0[2-3],lxb00[1-4] vn cmd k8s-vm-join {}
 ```
 
-Alternative: [minikube][docs/minikube.md], [from scratch][08], [kubespray][07]
+Alternatives: [minikube](docs/minikube.md), [kubespray][07], [from scratch][08]
 
 ## Usage
 
