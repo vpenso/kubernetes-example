@@ -1,14 +1,16 @@
-# Jobs Patterns on Kubernetes
+# Jobs
 
 Short-lived, one-off tasks, running until (successful) termination:
 
 * Things to only do once, such as batch jobs or database migrations
 * In contrast to regular continuously executed pods
 
-**Job object** creates/manages pods defined by **job specification**:
+[Job objects][01] creates/manages pods defined by **job specification**:
 
 * Coordinates running multiple pods in parallel
 * Restarts pods until successful termination
+
+### One Shot
 
 ```bash
 # start an interactive container
@@ -56,3 +58,57 @@ spec:
 # run the job spec
 kubectl create -f https://k8s.io/examples/controllers/job.yaml
 ```
+
+### Cron Job
+
+Run jobs on a time-based schedule for creating periodic and recurring tasks:
+
+```bash
+# run a job with a given interval
+>>> kubectl run hello \
+                --schedule="*/1 * * * *" \
+                --restart=OnFailure \
+                --image=busybox \
+                -- /bin/sh -c "date; echo Hello from the Kubernetes cluster"
+# alternativly us a job specification
+>>> curl -L https://k8s.io/examples/application/job/cronjob.yaml
+```
+```yaml
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: hello
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: hello
+            image: busybox
+            args:
+            - /bin/sh
+            - -c
+            - date; echo Hello from the Kubernetes cluster
+          restartPolicy: OnFailure
+```
+```bash
+# start the hello cronjob
+>>> kubectl create -f https://k8s.io/examples/application/job/cronjob.yaml
+# show its status
+>>> kubectl get cronjob hello
+NAME      SCHEDULE      SUSPEND   ACTIVE    LAST SCHEDULE   AGE
+hello     */1 * * * *   False     0         19s             28s
+# show the jobs executed by the interval
+>>> kubectl get jobs
+NAME               DESIRED   SUCCESSFUL   AGE
+hello-1532427540   1         1            2m
+hello-1532427600   1         1            1m
+hello-1532427660   1         1            17s
+>>> kubectl delete cronjob hello
+cronjob "hello" deleted
+```
+
+
+[01]: https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/ "kubernetes job controllers"
