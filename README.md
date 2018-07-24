@@ -63,19 +63,16 @@ Use the [nginx-deployment.yaml][10] specification for [deployment][05] of multip
 
 ```bash
 # upload all specification from this repo to the admin node
->>> k8s-upload-specs
-# start the deployment
->>> vm exec $K8S_ADMIN_NODE -- \
-        kubectl create -f \~/nginx-deployment.yaml
+>>> k8s-upload-specs && vm exec $K8S_ADMIN_NODE
+# deploy the specification
+>>> kubectl create -f \~/nginx-deployment.yaml
 deployment.apps/nginx-deployment created
 # show deployment state
->>> vm exec $K8S_ADMIN_NODE -- \
-        kubectl get deployments
+>>> kubectl get deployments
 NAME               DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
 nginx-deployment   3         3         3            3           1m
 # ... in more detail
->>> vm exec $K8S_ADMIN_NODE -- \
-        kubectl describe deployment nginx-deployment | head -n10
+>>> kubectl describe deployment nginx-deployment | head -n10
 Name:                   nginx-deployment
 Namespace:              default
 CreationTimestamp:      Tue, 24 Jul 2018 13:00:39 +0200
@@ -87,9 +84,28 @@ StrategyType:           RollingUpdate
 MinReadySeconds:        0
 RollingUpdateStrategy:  25% max unavailable, 25% max surge
 # clean up
->>> vm exec $K8S_ADMIN_NODE -- \
-        kubectl delete -f \~/nginx-deployment.yaml
+>>> kubectl delete -f \~/nginx-deployment.yaml
 deployment.apps "nginx-deployment" deleted
+```
+
+Scaling a deployment
+
+```bash
+>>> kubectl get replicaset
+NAME                          DESIRED   CURRENT   READY     AGE
+nginx-deployment-67594d6bf6   3         3         3         1h
+>>> kubectl scale --replicas=5 deployment/nginx-deployment
+deployment.extensions/nginx-deployment scaled
+>>> kubectl get replicaset
+NAME                          DESIRED   CURRENT   READY     AGE
+nginx-deployment-67594d6bf6   5         5         5         1h
+>>> kubectl --output wide --selector app=nginx get pods
+NAME                                READY     STATUS    RESTARTS   AGE       IP             NODE
+nginx-deployment-67594d6bf6-6vln5   1/1       Running   0          1h        192.168.3.10   lxb003
+nginx-deployment-67594d6bf6-bkptk   1/1       Running   0          1h        192.168.2.11   lxb002
+nginx-deployment-67594d6bf6-ht58h   1/1       Running   0          4m        192.168.4.13   lxb004
+nginx-deployment-67594d6bf6-skvz8   1/1       Running   0          4m        192.168.1.9    lxb001
+nginx-deployment-67594d6bf6-xj4nz   1/1       Running   0          1h        192.168.4.12   lxb004
 ```
 
 [00]: https://github.com/vpenso/vm-tools
