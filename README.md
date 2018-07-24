@@ -8,15 +8,6 @@ CentOS 7   | Operating System              | <https://centos.org>
 Docker     | Container Run-time          | <https://docker.com>
 Kubernetes | Container Orchestration       | <https://kubernetes.io/>
 
-File                     | Description
--------------------------|-----------------
-[var/aliases/k8s.sh][01] | Shell functions for Kubernetes
-
-Use the following shell function to install & configure Kubernetes:
-
-- [k8s-vm-bootstrap()][01] - Install Docker and Kubernetes on a given VM instance
-- [k8s-vm-join()][01] - Join a given VM instance with the Kubernetes cluster
-
 This example uses a virtual machine setup with [vm-tools][00]:
 
 ```bash
@@ -25,6 +16,16 @@ vn shadow centos7
 # install Docker nad Kubernetes on all VM instances
 vn cmd k8s-vm-bootstrap {}
 ```
+
+Use the following shell function to work with Kubernetes:
+
+File                     | Description
+-------------------------|-----------------
+[var/aliases/k8s.sh][01] | Shell functions for Kubernetes
+
+- [k8s-vm-bootstrap()][01] - Install Docker and Kubernetes on a given VM instance
+- [k8s-vm-join()][01] - Join a given VM instance with the Kubernetes cluster
+- [k8s-upload-specs()][01] - Upload Kubernetes specs from [var/specs](var/specs)
 
 ## Deployment
 
@@ -61,11 +62,11 @@ Alternatives: [kubespray][07], [from scratch][08]
 Use the [nginx-deployment.yaml][10] specification for [deployment][05] of multiple [Nginx][11] servers:
 
 ```bash
-# upload specification to the admin node
->>> vm sync lxcc01 $K8S_SPECS/nginx-deployment.yaml :/tmp
+# upload all specification from this repo to the admin node
+>>> k8s-upload-specs
 # start the deployment
 >>> vm exec $K8S_ADMIN_NODE -- \
-        kubectl create -f /tmp/nginx-deployment.yaml
+        kubectl create -f ~/nginx-deployment.yaml
 deployment.apps/nginx-deployment created
 # show deployment state
 >>> vm exec $K8S_ADMIN_NODE -- \
@@ -87,7 +88,7 @@ MinReadySeconds:        0
 RollingUpdateStrategy:  25% max unavailable, 25% max surge
 # clean up
 >>> vm exec $K8S_ADMIN_NODE -- \
-        kubectl delete -f /tmp/nginx-deployment.yaml
+        kubectl delete -f ~/nginx-deployment.yaml
 deployment.apps "nginx-deployment" deleted
 ```
 

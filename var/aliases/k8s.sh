@@ -61,3 +61,11 @@ k8s-vm-join() {
         vm exec $instance --root \
                 "$(vm exec $K8S_ADMIN_NODE --root -- kubeadm token create --print-join-command)"
 }
+
+#
+# upload all Kubernetes specs to the home-directory of the devops
+# user on the Kubernetes admin node
+#
+k8s-upload-specs() {
+        vm sync $K8S_ADMIN_NODE $K8S_SPECS/*.yaml :
+}

@@ -114,26 +114,26 @@ cronjob "hello" deleted
 ### Parallel
 
 ```bash
->>> cat /tmp/spec.yaml
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: wait
-spec:
-  completions: 6
-  parallelism: 2
-  template:
-    metadata:
-      name: wait
-    spec:
-      containers:
-      - name: wait
-        image: busybox
-        command: ["sleep",  "20"]
-      restartPolicy: Never
->>> kubectl apply -f /tmp/spec.yaml
-
->>> kubectl delete -f /tmp/spec.yaml 
+>>> vm exec $K8S_ADMIN_NODE -- \
+        kubectl apply -f ~/job-parallel-wait.yaml
+job.batch/wait created
+>>> vm exec $K8S_ADMIN_NODE -- \
+        kubectl get -w pods -l job-name=wait
+NAME         READY     STATUS    RESTARTS   AGE
+wait-qp5l2   1/1       Running   0          22s
+wait-tnx79   1/1       Running   0          22s
+wait-tnx79   0/1       Completed   0         26s
+wait-qp5l2   0/1       Completed   0         26s
+wait-z2zv8   0/1       Pending   0         0s
+wait-z2zv8   0/1       Pending   0         1s
+wait-z2zv8   0/1       ContainerCreating   0         1s
+wait-dvbts   0/1       Pending   0         0s
+wait-dvbts   0/1       Pending   0         0s
+wait-dvbts   0/1       ContainerCreating   0         0s
+wait-dvbts   1/1       Running   0         5s
+wait-z2zv8   1/1       Running   0         12s
+>>> vm exec $K8S_ADMIN_NODE -- \
+        kubectl delete -f ~/job-parallel-wait.yaml 
 ```
 
 
