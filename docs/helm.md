@@ -51,20 +51,18 @@ stable/grafana	1.12.0       	5.1.3      	The leading tool for querying and visua
 >>> helm list
 NAME   	REVISION	UPDATED                 	STATUS  	CHART         	NAMESPACE
 grafana	1       	Thu Jul 26 11:43:23 2018	DEPLOYED	grafana-1.12.0	default 
+
+>>> kubectl get service grafana     
+NAME      TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE
+grafana   ClusterIP   10.101.66.86   <none>        80/TCP    55m
+>>> kubectl delete service grafana
+>>> kubectl expose deployment grafana --type=LoadBalancer
 # get the admin user password
 >>> kubectl get secret \
         --namespace default grafana \
         --output=jsonpath={.data.admin-password} \
         | base64 --decode ; echo
-# get the name of the Grafana pod
->>> grafana_pod_name=$( \
-        kubectl get pods \
-                --namespace default \
-                 --selector=app=grafana \
-                 --output=jsonpath={.items..metadata.name} \
-    ) && echo $grafana_pod_name
-# configure port forwarding
->>> kubectl --namespace default port-forward $grafana_pod_name 3000
+
 ```
 
 
