@@ -67,5 +67,5 @@ k8s-vm-join() {
 # user on the Kubernetes admin node
 #
 k8s-upload-specs() {
-        vm sync $K8S_ADMIN_NODE $K8S_SPECS/*.yaml :
+        vm sync $K8S_ADMIN_NODE $K8S_SPECS/* :
 }

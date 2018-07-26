@@ -49,7 +49,7 @@ vm exec $K8S_ADMIN_NODE -- '
         sudo chown $(id -u):$(id -g) $HOME/.kube/config
 '
 # setup the pod network
-vm exec $K8S_ADMIN_NODE -- 
+vm exec $K8S_ADMIN_NODE -- \
         kubectl apply -f https://raw.githubusercontent.com/cloudnativelabs/kube-router/master/daemonset/kubeadm-kuberouter.yaml
 # join all other VM instances with the cluster
 NODES=lxcc0[2-3],lxb00[1-4] vn cmd k8s-vm-join {}
@@ -59,14 +59,17 @@ Alternatives: [kubespray][07], [from scratch][08]
 
 ## Usage
 
-
 **[docs/jobs](docs/jobs.md) describes workloads on Kubernetes in more detail.**
+
+**[docs/helm](docs/helm.md) describes the Helm Kubernetes package manager.**
+
+Following example uses a [deployment][05] to start three [Nginx][11] instances:
 
 ```bash
 # upload all specification from this repo to the admin node, and login
 >>> k8s-upload-specs && vm exec $K8S_ADMIN_NODE
 # deploy the specification
->>> kubectl create -f ~/nginx-deployment.yaml
+>>> kubectl create -f ~/deployment/nginx.yaml
 deployment.apps/nginx-deployment created
 # show deployment state
 >>> kubectl get deployments
@@ -85,7 +88,7 @@ StrategyType:           RollingUpdate
 MinReadySeconds:        0
 RollingUpdateStrategy:  25% max unavailable, 25% max surge
 # clean up
->>> kubectl delete -f ~/nginx-deployment.yaml
+>>> kubectl delete -f ~/deployment/nginx.yaml
 deployment.apps "nginx-deployment" deleted
 ```
 
