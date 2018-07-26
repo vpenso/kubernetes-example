@@ -10,6 +10,11 @@ Short-lived, one-off tasks, running until (successful) termination:
 * Coordinates running multiple pods in parallel
 * Restarts pods until successful termination
 
+Spec                   | Description
+-----------------------|-----------------------------------
+[job-onshot.yaml][02]  | Short-lived single task job
+[cronjob.yaml][03]     | Periodicly execuded job
+
 ### One Shot
 
 ```bash
@@ -24,6 +29,8 @@ kubectl run pi \
             --image=perl \
             --restart=OnFailure \
             -- perl -Mbignum=bpi -wle 'print bpi(2000)'
+# alternativly use a job specification
+kubectl create -f ~/job-onshot.yaml
 # check the job status
 kubectl describe job/pi
 # get the executing pod
@@ -32,31 +39,6 @@ kubectl get pods --selector=job-name=pi
 kubectl logs $(kubectl get pods --selector=job-name=pi --output=jsonpath={.items..metadata.name})
 # remove the jobs
 kubectl delete job pi
-```
-
-Using a job specification:
-
-```bash
-curl -L https://k8s.io/examples/controllers/job.yaml
-```
-```yaml
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: pi
-spec:
-  template:
-    spec:
-      containers:
-      - name: pi
-        image: perl
-        command: ["perl",  "-Mbignum=bpi", "-wle", "print bpi(2000)"]
-      restartPolicy: Never
-  backoffLimit: 4
-```
-```bash
-# run the job spec
-kubectl create -f https://k8s.io/examples/controllers/job.yaml
 ```
 
 ### Cron Job
@@ -72,31 +54,7 @@ Run jobs on a time-based schedule for creating periodic and recurring tasks:
                 -- /bin/sh -c "date; echo Hello from the Kubernetes cluster"
 cronjob.batch/hello created
 # alternativly us a job specification
->>> curl -L https://k8s.io/examples/application/job/cronjob.yaml
-```
-```yaml
-apiVersion: batch/v1beta1
-kind: CronJob
-metadata:
-  name: hello
-spec:
-  schedule: "*/1 * * * *"
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          containers:
-          - name: hello
-            image: busybox
-            args:
-            - /bin/sh
-            - -c
-            - date; echo Hello from the Kubernetes cluster
-          restartPolicy: OnFailure
-```
-```bash
-# start the hello cronjob
->>> kubectl create -f https://k8s.io/examples/application/job/cronjob.yaml
+>>> kubectl create -f ~/cronjob.yaml
 # show its status
 >>> kubectl get cronjob hello
 NAME      SCHEDULE      SUSPEND   ACTIVE    LAST SCHEDULE   AGE
@@ -153,3 +111,4 @@ wait-z2zv8   1/1       Running   0         12s
 
 
 [01]: https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/ "kubernetes job controllers"
+[02]: ../var/specs/job-onshot.yaml

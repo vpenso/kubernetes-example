@@ -59,10 +59,11 @@ Alternatives: [kubespray][07], [from scratch][08]
 
 ## Usage
 
-Use the [nginx-deployment.yaml][10] specification for [deployment][05] of multiple [Nginx][11] servers:
+
+**[docs/jobs](docs/jobs.md) describes workloads on Kubernetes in more detail.**
 
 ```bash
-# upload all specification from this repo to the admin node
+# upload all specification from this repo to the admin node, and login
 >>> k8s-upload-specs && vm exec $K8S_ADMIN_NODE
 # deploy the specification
 >>> kubectl create -f ~/nginx-deployment.yaml
