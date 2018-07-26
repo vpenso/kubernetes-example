@@ -37,6 +37,37 @@ helm repo update
 
 List of [stable charts][05] on GitHub.
 
+Install Grafana using a helm chart:
+
+```bash
+# list all available charts
+>>> helm search
+# search a specific chart, i.e. Grafana
+>>> helm search grafana
+NAME          	CHART VERSION	APP VERSION	DESCRIPTION
+stable/grafana	1.12.0       	5.1.3      	The leading tool for querying and visualizing t...
+# install Grafana
+>>> helm install --name grafana stable/grafana
+>>> helm list
+NAME   	REVISION	UPDATED                 	STATUS  	CHART         	NAMESPACE
+grafana	1       	Thu Jul 26 11:43:23 2018	DEPLOYED	grafana-1.12.0	default 
+# get the admin user password
+>>> kubectl get secret \
+        --namespace default grafana \
+        --output=jsonpath={.data.admin-password} \
+        | base64 --decode ; echo
+# get the name of the Grafana pod
+>>> grafana_pod_name=$( \
+        kubectl get pods \
+                --namespace default \
+                 --selector=app=grafana \
+                 --output=jsonpath={.items..metadata.name} \
+    ) && echo $grafana_pod_name
+# configure port forwarding
+>>> kubectl --namespace default port-forward $grafana_pod_name 3000
+```
+
+
 
 
 [01]: https://helm.sh "home page"
