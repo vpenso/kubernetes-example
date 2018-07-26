@@ -10,10 +10,11 @@ Short-lived, one-off tasks, running until (successful) termination:
 * Coordinates running multiple pods in parallel
 * Restarts pods until successful termination
 
-Spec                   | Description
------------------------|-----------------------------------
-[job-onshot.yaml][02]  | Short-lived single task job
-[cronjob.yaml][03]     | Periodicly execuded job
+Spec                    | Description
+------------------------|-----------------------------------
+[job-onshot.yaml][02]   | Short-lived single task job
+[job-parallel.yaml][04] | Multiple jobs in parallel
+[cronjob.yaml][03]      | Periodically executed job
 
 ### One Shot
 
@@ -80,16 +81,14 @@ Attribute         | Description
 
 ```bash
 # attributes in the spec
->>> grep -e completion -e parallelism $K8S_SPECS/job-parallel-wait.yaml
+>>> grep -e completion -e parallelism ~/job-parallel.yaml
   completions: 6
   parallelism: 2
 # start the parallel job
->>> vm exec $K8S_ADMIN_NODE -- \
-        kubectl apply -f \~/job-parallel-wait.yaml
+>>> kubectl apply -f ~/job-parallel.yaml
 job.batch/wait created
 # watch the status of pods created
->>> vm exec $K8S_ADMIN_NODE -- \
-        kubectl get -w pods -l job-name=wait
+>>> kubectl get -w pods -l job-name=wait
 NAME         READY     STATUS    RESTARTS   AGE
 wait-qp5l2   1/1       Running   0          22s
 wait-tnx79   1/1       Running   0          22s
@@ -104,11 +103,12 @@ wait-dvbts   0/1       ContainerCreating   0         0s
 wait-dvbts   1/1       Running   0         5s
 wait-z2zv8   1/1       Running   0         12s
 # clean up
->>> vm exec $K8S_ADMIN_NODE -- \
-        kubectl delete -f \~/job-parallel-wait.yaml 
+>>> kubectl delete -f ~/job-parallel.yaml 
 ```
 
 
 
 [01]: https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/ "kubernetes job controllers"
 [02]: ../var/specs/job-onshot.yaml
+[03]: ../var/specs/cronjob.yaml
+[04]: ../var/specs/job-parallel.yaml
