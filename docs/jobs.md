@@ -10,6 +10,8 @@ Short-lived, one-off tasks, running until (successful) termination:
 * Coordinates running multiple pods in parallel
 * Restarts pods until successful termination
 
+List of job specifications:
+
 Spec                    | Description
 ------------------------|-----------------------------------
 [job-onshot.yaml][02]   | Short-lived single task job
