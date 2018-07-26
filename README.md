@@ -5,8 +5,9 @@ List of components used in this project:
 Component  | Description                   | Cf.
 -----------|-------------------------------|-----------------------
 CentOS 7   | Operating System              | <https://centos.org>
-Docker     | Container Run-time          | <https://docker.com>
+Docker     | Container Run-time            | <https://docker.com>
 Kubernetes | Container Orchestration       | <https://kubernetes.io/>
+Helm       | Kubernetes package manager    | <https://helm.sh>
 
 This example uses a virtual machine setup with [vm-tools][00]:
 
@@ -59,9 +60,6 @@ Alternatives: [kubespray][07], [from scratch][08]
 
 ## Usage
 
-**[docs/jobs](docs/jobs.md) describes workloads on Kubernetes in more detail.**
-
-**[docs/helm](docs/helm.md) describes the Helm Kubernetes package manager.**
 
 Following example uses a [deployment][05] to start three [Nginx][11] instances:
 
@@ -114,6 +112,13 @@ nginx-deployment-67594d6bf6-ht58h   1/1       Running   0          4m        192
 nginx-deployment-67594d6bf6-skvz8   1/1       Running   0          4m        192.168.1.9    lxb001
 nginx-deployment-67594d6bf6-xj4nz   1/1       Running   0          1h        192.168.4.12   lxb004
 ```
+
+Further reading:
+
+Document                       | Description
+-------------------------------|-----------------------------------------------
+[docs/jobs.md](docs/jobs.md)   | Oneshot-, parallel- and cron-jobs in more detail
+[docs/helm.md](docs/helm.md)   | Describes the **Helm** Kubernetes package manager
 
 [00]: https://github.com/vpenso/vm-tools
 [01]: var/aliases/k8s.sh
