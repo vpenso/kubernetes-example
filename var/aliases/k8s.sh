@@ -33,11 +33,15 @@ k8s-vm-bootstrap() {
         vm sync $instance --root $K8S_PATH/$file :$file
         vm exec $instance --root -- \
                 yum update --assumeyes &>/dev/null
+        vm exec $instance --root \
+                yum install --assumeyes epel-release
         # install components
         vm exec $instance --root -- \
                 yum install --assumeyes \
                         bridge-utils \
+                        conntrack-tools \
                         docker \
+                        jq \
                         kubelet \
                         kubeadm \
                         kubectl

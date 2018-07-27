@@ -58,6 +58,13 @@ NODES=lxcc0[2-3],lxb00[1-4] vn cmd k8s-vm-join {}
 
 Alternatives: [kubespray][07], [from scratch][08]
 
+```bash
+
+kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
+kubectl get deployment,service --namespace=kube-system kubernetes-dashboard
+sudo kubectl proxy --address="$(hostname -i)" -p 443 --accept-hosts='^*$'
+```
+
 ## Usage
 
 
