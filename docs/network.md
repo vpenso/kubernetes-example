@@ -21,13 +21,6 @@ lxcc01    10.1.1.9    192.168.0.0/24
 lxcc02    10.1.1.10   192.168.5.0/24
 lxcc03    10.1.1.11   192.168.6.0/24
 ```
-
-Kubelete network plugin:
-
-* Creates the pods eth0 network interface in a dedicated network namespace
-* Allocates an pod IP from the address pool
-* Makes the pod IP reachable from the cluster
-
 ```bash
 # create a pod with a simple web-server
 >>> kubectl create deployment nginx --image=nginx
@@ -39,6 +32,8 @@ nginx-78f5d695bd-pkxh9   1/1       Running   0          1m        192.168.4.4   
 >>> curl http://192.168.4.4
 ...
 ```
+
+## Pod Network
 
 Investigate the pod network on the node:
 
@@ -69,10 +64,10 @@ nsenter -t 10907 -n ip addr show dev eth0 | head -n3
     inet 192.168.4.4/24 scope global eth0
 ```
 
-Above you can see that in this example the interface "3" is paired with interface "6"
+In this example interface "3" in the pod/container is paired with interface "6" on the node:
 
-* The node `veth` interface is attached to a bridge (here `kube-bridge`)
-* Two virtual interfaces bonded together (think like a virtual patch cable)
+* Two **virtual interfaces bonded** together (think like a virtual patch cable)
+* The node `veth` interface is **attached to a bridge** (here `kube-bridge`)
 
 ```bash
 # show the bridge and interface 6
@@ -84,6 +79,8 @@ Above you can see that in this example the interface "3" is paired with interfac
 NIC statistics:
      peer_ifindex: 3
 ```
+
+## Service Routes
 
 Pods typically use service IPs/ports to communicate with others
 
@@ -99,10 +96,6 @@ Packages leaving a container routed through the host IP (usually masqueraded):
 * Connects the host to  the `eth0` in the container network namespace
 * `iptables` configures a **route to the container** network namespace
 
-Overlay network, allows communication of pods/containers across worker nodes:
-
-* Manages the route table on each worker node
-
 ```bash
 # inspect the host
 >>> iptables-save | grep nginx                       
@@ -116,6 +109,11 @@ Overlay network, allows communication of pods/containers across worker nodes:
 # netfilter connection tracking
 >>> conntrack -L                       
 ```
+
+Overlay network, allows communication of pods/containers across worker nodes:
+
+* Manages the route table on each worker node
+
 
 
 [01]: https://github.com/containernetworking/cni "CNCF repo for CNI"
