@@ -3,7 +3,7 @@
 **Containers in a pod share the network**:
 
 * Common network namespace, one network interface, a single IP address
-* Containers use `localhost` for communication
+* Containers use `localhost` for communication (no external networking)
 * Pod to pod communication over OSI layer 3 (routing) managed by **network plugins**
 
 Nodes have an **assigned IP subnet as address pool** for the pods.
@@ -69,23 +69,20 @@ nsenter -t 10907 -n ip addr show dev eth0 | head -n3
     inet 192.168.4.4/24 scope global eth0
 ```
 
+Above you can see that in this example the interface "3" is paired with interface "6"
 
-
-
-Packages leaving a container routed through the host IP (usually masqueraded):
-
-* Based on a **Point-to-point virtual tunnel** (`veth` pairs)
-* Connects the host to  the `eth0` in the container network namespace
-* `iptables` configures a **route to the container** network namespace
-
-Overlay network, allows communication of pods/containers accross worker nodes:
-
-* Manages the route table on each worker node
+* The node `veth` interface is attached to a bridge (here `kube-bridge`)
+* Two virtual interfaces bonded together (think like a virtual patch cable)
 
 ```bash
-# inspect the host
-iptables-save                      # IP package routing
-conntrack -L                       # netfilter connection tracking
+# show the bridge and interface 6
+>>> ip l | grep bridge
+4: kube-bridge: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default qlen 1000
+6: vethc92900e3@if3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master kube-bridge state UP mode DEFAULT group default
+# which is paired with interface 3
+>>> ethtool -S vethc92900e3      
+NIC statistics:
+     peer_ifindex: 3
 ```
 
 Pods typically use service IPs/ports to communicate with others
@@ -93,8 +90,32 @@ Pods typically use service IPs/ports to communicate with others
 ```bash
 >>> kubectl create service nodeport nginx --tcp=80:80
 >>> kubectl get service --selector=app=nginx
-NAME      TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
-nginx     NodePort   10.102.126.233   <none>        80:30543/TCP   2m
+NAME      TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+nginx     NodePort   10.99.138.146   <none>        80:32479/TCP   53s
 ```
+
+Packages leaving a container routed through the host IP (usually masqueraded):
+
+* Connects the host to  the `eth0` in the container network namespace
+* `iptables` configures a **route to the container** network namespace
+
+Overlay network, allows communication of pods/containers across worker nodes:
+
+* Manages the route table on each worker node
+
+```bash
+# inspect the host
+>>> iptables-save | grep nginx                       
+-A KUBE-NODEPORTS -p tcp -m comment --comment "default/nginx:80-80" -m tcp --dport 32479 -j KUBE-MARK-MASQ
+-A KUBE-NODEPORTS -p tcp -m comment --comment "default/nginx:80-80" -m tcp --dport 32479 -j KUBE-SVC-OVTWZ4GROBJZO4C5
+-A KUBE-SEP-AIU7VSID7D2D2Z4F -s 192.168.4.4/32 -m comment --comment "default/nginx:80-80" -j KUBE-MARK-MASQ
+-A KUBE-SEP-AIU7VSID7D2D2Z4F -p tcp -m comment --comment "default/nginx:80-80" -m tcp -j DNAT --to-destination 192.168.4.4:80
+-A KUBE-SERVICES ! -s 192.168.0.0/16 -d 10.99.138.146/32 -p tcp -m comment --comment "default/nginx:80-80 cluster IP" -m tcp --dport 80 -j KUBE-MARK-MASQ
+-A KUBE-SERVICES -d 10.99.138.146/32 -p tcp -m comment --comment "default/nginx:80-80 cluster IP" -m tcp --dport 80 -j KUBE-SVC-OVTWZ4GROBJZO4C5
+-A KUBE-SVC-OVTWZ4GROBJZO4C5 -m comment --comment "default/nginx:80-80" -j KUBE-SEP-AIU7VSID7D2D2Z4F
+# netfilter connection tracking
+>>> conntrack -L                       
+```
+
 
 [01]: https://github.com/containernetworking/cni "CNCF repo for CNI"
