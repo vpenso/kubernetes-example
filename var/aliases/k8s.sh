@@ -1,13 +1,37 @@
-K8S_VM_IMAGE=centos7
+K8S_VM_IMAGE=k8s
 K8S_ADMIN_NODE=lxcc01
 K8S_SPECS=$K8S_PATH/var/specs
+CENTOS_MIRROR=http://mirror.centos.org/centos-7/7/os/x86_64/
 
-export K8S_IMAGE \
+
+export K8S_VM_IMAGE \
        K8S_ADMIN_NODE \
-       K8S_SPECS
+       K8S_SPECS \
+       CENTOS_MIRROR
 
 #
-# install all components comment on all nodes
+# Use CentOS Kickstart to install a base VM image including all prerequisites
+# required for Kubernetes deployment
+#
+k8s-vm-image() {
+        mkdir -p $VM_IMAGE_PATH/$K8S_VM_IMAGE && cd $VM_IMAGE_PATH/$K8S_VM_IMAGE
+        virt-install \
+		--name $K8S_VM_IMAGE \
+		--memory 2048 --virt-type kvm --network bridge=nbr0 \
+             	--disk path=disk.img,size=40,format=qcow2,sparse=true,bus=virtio \
+             	--location $CENTOS_MIRROR \
+             	--graphics none \
+		--console pty,target_type=serial \
+ 	        --noreboot \
+             	--initrd-inject=$K8S_PATH/var/centos/7/kickstart.cfg \
+             	--extra-args "console=ttyS0,115200n8 serial inst.repo=$CENTOS_MIRROR inst.text inst.ks=file:/kickstart.cfg" \
+	&& virsh undefine $K8S_VM_IMAGE
+	cd - &>/dev/null
+}
+
+#
+# Install all prerequisites required for Kubernetes deployment on a 
+# running CentOS VM instance
 #
 k8s-vm-bootstrap() {
         local instance=$1
@@ -33,7 +57,7 @@ k8s-vm-bootstrap() {
         vm sync $instance --root $K8S_PATH/$file :$file
         vm exec $instance --root -- \
                 yum update --assumeyes &>/dev/null
-        vm exec $instance --root \
+        vm exec $instance --root -- \
                 yum install --assumeyes epel-release
         # install components
         vm exec $instance --root -- \

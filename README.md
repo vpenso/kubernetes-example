@@ -6,7 +6,7 @@ Component  | Description                   | Cf.
 -----------|-------------------------------|-----------------------
 CentOS 7   | Operating System              | <https://centos.org>
 Docker     | Container Run-time            | <https://docker.com>
-Kubernetes | Container Orchestration       | <https://kubernetes.io/>
+Kubernetes | Container Orchestration       | <https://kubernetes.io>
 Helm       | Kubernetes package manager    | <https://helm.sh>
 
 This example uses a virtual machine setup with [vm-tools][00]:
@@ -24,6 +24,7 @@ File                     | Description
 -------------------------|-----------------
 [var/aliases/k8s.sh][01] | Shell functions for Kubernetes
 
+- [k8s-vm-image()][01] - Kickstart a CentOS VM image with Kubernetes prerequisites from [var/centos/7/kickstart.cfg](var/centos/7/kickstart.cfg)
 - [k8s-vm-bootstrap()][01] - Install Docker and Kubernetes on a given VM instance
 - [k8s-vm-join()][01] - Join a given VM instance with the Kubernetes cluster
 - [k8s-upload-specs()][01] - Upload Kubernetes specs from [var/specs](var/specs)
