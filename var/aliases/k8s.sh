@@ -16,17 +16,17 @@ export K8S_VM_IMAGE \
 k8s-vm-image() {
         mkdir -p $VM_IMAGE_PATH/$K8S_VM_IMAGE && cd $VM_IMAGE_PATH/$K8S_VM_IMAGE
         virt-install \
-		--name $K8S_VM_IMAGE \
-		--memory 2048 --virt-type kvm --network bridge=nbr0 \
-             	--disk path=disk.img,size=40,format=qcow2,sparse=true,bus=virtio \
-             	--location $CENTOS_MIRROR \
-             	--graphics none \
-		--console pty,target_type=serial \
- 	        --noreboot \
-             	--initrd-inject=$K8S_PATH/var/centos/7/kickstart.cfg \
-             	--extra-args "console=ttyS0,115200n8 serial inst.repo=$CENTOS_MIRROR inst.text inst.ks=file:/kickstart.cfg" \
-	&& virsh undefine $K8S_VM_IMAGE
-	cd - &>/dev/null
+                --name $K8S_VM_IMAGE \
+                --memory 2048 --virt-type kvm --network bridge=nbr0 \
+                --disk path=disk.img,size=40,format=qcow2,sparse=true,bus=virtio \
+                --location $CENTOS_MIRROR \
+                --graphics none \
+                --console pty,target_type=serial \
+                --noreboot \
+                --initrd-inject=$K8S_PATH/var/centos/7/kickstart.cfg \
+                --extra-args "console=ttyS0,115200n8 serial inst.repo=$CENTOS_MIRROR inst.text inst.ks=file:/kickstart.cfg" \
+        && virsh undefine $K8S_VM_IMAGE
+        cd - &>/dev/null
 }
 
 #

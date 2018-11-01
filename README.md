@@ -57,7 +57,7 @@ vm exec $K8S_ADMIN_NODE -- \
 NODES=lxcc0[2-3],lxb00[1-4] vn cmd k8s-vm-join {}
 ```
 
-Alternatives: [kubespray][07], [from scratch][08]
+Alternatives: [kubespray][07], [Gravity][12], [from scratch][08], [Rnacher RKE][13]
 
 ```bash
 
@@ -140,3 +140,5 @@ Document                       | Description
 [09]: https://github.com/kelseyhightower/kubernetes-the-hard-way "kubernetes the hard way"
 [10]: var/specs/nginx-deployment.yaml
 [11]: http://nginx.org/en/docs/
+[12]: https://github.com/gravitational/gravity
+[13]: https://github.com/rancher/rke
