@@ -1,16 +1,24 @@
 # Kubernetes
 
-### Requirements
+Deploy Kubernetes on physical infrastructure requires:
 
-Install PKI certificates on all nodes.
+* Service to provision bare-metal nodes (installing the operating system)
+* **IPs are clustre-scoped**:
+  - All containers can communicate with all other containers without NAT
+  - All nodes can communicate with all containers (and vice-versa) without NAT
+  - The IP that a container sees itself as is the same IP that others see it as
+  - Can be layer 3 routed, or a overlay network (SDN).
 
-**IPs are clustre-scoped**:
+Kubernetes Setup - Custom Solutions [3]:
 
-- All containers can communicate with all other containers without NAT
-- All nodes can communicate with all containers (and vice-versa) without NAT
-- The IP that a container sees itself as is the same IP that others see it as
+> If you already have a way to configure hosting resources, use kubeadm to
+> bring up a cluster with a single command per machine.
 
-Can be layer 3 routed, or a overlay network (SDN).
+kubeadm gets a minimum viable cluster up and running, cares only about 
+bootstrapping, not about provisioning machines. 
+
+- Supports life-cycle mangement (updatem downgrade, monitoring)
+- Expected to be used by configuration management systems
 
 ## Architecture
 
@@ -81,8 +89,17 @@ Abstraction to define a set of Pods and a policy to access them:
 
 # Reference
 
-Kubernetes Documentation  
+[1] Kubernetes Documentation  
 https://kubernetes.io/docs/home/
 
-Awesome Kubernetes   
+[2] Awesome Kubernetes   
 https://github.com/ramitsurana/awesome-kubernetes
+
+[3] Kubernetes Setup - Custom Solution  
+https://kubernetes.io/docs/setup/pick-right-solution/#custom-solutions
+
+[4] Kubeadm, GitHub  
+https://github.com/kubernetes/kubeadm
+
+[5] Installing Kubeadm  
+https://kubernetes.io/docs/setup/independent/install-kubeadm/
