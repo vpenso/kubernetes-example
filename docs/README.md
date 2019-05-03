@@ -103,3 +103,6 @@ https://github.com/kubernetes/kubeadm
 
 [5] Installing Kubeadm  
 https://kubernetes.io/docs/setup/independent/install-kubeadm/
+
+[6] Deep Dive: Cluster Lifecycle SIG (kubeadm)  
+https://www.youtube.com/watch?v=tAA0Hlag2n0
