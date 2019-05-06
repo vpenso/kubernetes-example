@@ -36,7 +36,12 @@ Deployment in a single VM instance, cf. [minikube](docs/minikube.md).
 [kubeadm][06] provides a simple CLI to create single master Kubernetes clusters:
 
 ```bash
-# initialize the master
+# VM instance for the admin node
+vm shadow $K8S_VM_IMAGE $K8S_ADMIN_NODE
+# adjust the VM instance configuration
+vm config $K8S_ADMIN_NODE --vcpu 2 --memory 2
+vm redefine $K8S_ADMIN_NODE
+# initialize the Kubernetes master
 vm exec $K8S_ADMIN_NODE --root -- \
         kubeadm init --pod-network-cidr=192.168.0.0/16
 ```

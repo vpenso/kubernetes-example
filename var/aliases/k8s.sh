@@ -26,6 +26,18 @@ k8s-vm-image() {
                 --initrd-inject=$K8S_PATH/var/centos/7/kickstart.cfg \
                 --extra-args "console=ttyS0,115200n8 serial inst.repo=$CENTOS_MIRROR inst.text inst.ks=file:/kickstart.cfg" \
         && virsh undefine $K8S_VM_IMAGE
+        # write default LibVirt configuration
+        virsh-config --vnc
+        # write default SSH configuration
+        ssh-config-instance
+        # start a VM instance for configuration
+        virsh create ./libvirt_instance.xml
+        # SSH configuration
+        ssh-instance 'mkdir -p -m 0700 /home/devops/.ssh ; sudo mkdir -p -m 0700 /root/.ssh'
+        rsync-instance keys/id_rsa.pub :.ssh/authorized_keys
+        ssh-instance -s 'cp ~/.ssh/authorized_keys /root/.ssh/authorized_keys'
+        # finished
+        ssh-instance -r "systemctl poweroff"
         cd - &>/dev/null
 }
 
@@ -56,7 +68,7 @@ k8s-vm-bootstrap() {
         file=/etc/yum.repos.d/kubernetes.repo
         vm sync $instance --root $K8S_PATH/$file :$file
         vm exec $instance --root -- \
-                yum update --assumeyes &>/dev/null
+                yum update --assumeyes
         vm exec $instance --root -- \
                 yum install --assumeyes epel-release
         # install components
