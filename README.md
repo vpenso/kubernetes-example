@@ -40,7 +40,9 @@ Helm       | Kubernetes package manager    | <https://helm.sh>
 
 Deployment in a single VM instance, cf. [minikube](docs/minikube.md).
 
-[kubeadm][06] provides a simple CLI to create single master Kubernetes clusters:
+[kubeadm][06] provides a simple CLI to create single master Kubernetes clusters
+(alternatives: [kubespray][07], [Gravity][12], [from scratch][08], 
+[Rnacher RKE][13]):
 
 ```bash
 # VM instance for the admin node
@@ -67,8 +69,9 @@ vm exec $K8S_ADMIN_NODE -- \
         kubectl apply -f https://raw.githubusercontent.com/cloudnativelabs/kube-router/master/daemonset/kubeadm-kuberouter.yaml
 ```
 
+Add more VM instances to create a Kubernetes cluster
+
 ```bash
-# join all other VM instances with the cluster
 NODES=lxcc0[2-3],lxb00[1-4]
 # start the rest of the cluster nodes
 vn shadow $K8S_VM_IMAGE
@@ -76,10 +79,9 @@ vn shadow $K8S_VM_IMAGE
 vn cmd k8s-vm-join {}
 ```
 
-Alternatives: [kubespray][07], [Gravity][12], [from scratch][08], [Rnacher RKE][13]
+Install the Kubernetes Dashboard:
 
 ```bash
-
 kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
 kubectl get deployment,service --namespace=kube-system kubernetes-dashboard
 sudo kubectl proxy --address="$(hostname -i)" -p 443 --accept-hosts='^*$'
