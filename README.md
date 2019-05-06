@@ -1,5 +1,34 @@
 # Kubernetes Example
 
+File                     | Description
+-------------------------|-----------------
+[var/aliases/k8s.sh][01] | Shell functions for Kubernetes
+
+Use the following shell functions:
+
+- [k8s-vm-image()][01] - Kickstart a CentOS VM image with Kubernetes prerequisites from [var/centos/7/kickstart.cfg](var/centos/7/kickstart.cfg)
+- [k8s-vm-bootstrap()][01] - Install Docker and Kubernetes on a given VM instance
+- [k8s-vm-join()][01] - Join a given VM instance with the Kubernetes cluster
+- [k8s-upload-specs()][01] - Upload Kubernetes specs from [var/specs](var/specs)
+
+The shell script ↴ [source_me.sh][source_me.sh] adds the tool-chain in this 
+repository to your shell environment:
+
+```bash
+source source_me.sh
+```
+
+This example uses a virtual machine setup with [vm-tools][00]:
+
+```bash
+# Kickstart a CentOS VM image and apply a basic configuration
+k8s-vm-image
+# list the VM image directory
+ls -1 $VM_IMAGE_PATH/$K8S_VM_IMAGE
+```
+
+## Deployment
+
 List of components used in this project:
 
 Component  | Description                   | Cf.
@@ -8,28 +37,6 @@ CentOS 7   | Operating System              | <https://centos.org>
 Docker     | Container Run-time            | <https://docker.com>
 Kubernetes | Container Orchestration       | <https://kubernetes.io>
 Helm       | Kubernetes package manager    | <https://helm.sh>
-
-This example uses a virtual machine setup with [vm-tools][00]:
-
-```bash
-# start new VM instances using `centos7` as source image
-vn shadow centos7
-# install Docker nad Kubernetes on all VM instances
-vn cmd k8s-vm-bootstrap {}
-```
-
-Use the following shell function to work with Kubernetes:
-
-File                     | Description
--------------------------|-----------------
-[var/aliases/k8s.sh][01] | Shell functions for Kubernetes
-
-- [k8s-vm-image()][01] - Kickstart a CentOS VM image with Kubernetes prerequisites from [var/centos/7/kickstart.cfg](var/centos/7/kickstart.cfg)
-- [k8s-vm-bootstrap()][01] - Install Docker and Kubernetes on a given VM instance
-- [k8s-vm-join()][01] - Join a given VM instance with the Kubernetes cluster
-- [k8s-upload-specs()][01] - Upload Kubernetes specs from [var/specs](var/specs)
-
-## Deployment
 
 Deployment in a single VM instance, cf. [minikube](docs/minikube.md).
 
