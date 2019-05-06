@@ -7,7 +7,6 @@ File                     | Description
 Use the following shell functions:
 
 - [k8s-vm-image()][01] - Kickstart a CentOS VM image with Kubernetes prerequisites from [var/centos/7/kickstart.cfg](var/centos/7/kickstart.cfg)
-- [k8s-vm-bootstrap()][01] - Install Docker and Kubernetes on a given VM instance
 - [k8s-vm-join()][01] - Join a given VM instance with the Kubernetes cluster
 - [k8s-upload-specs()][01] - Upload Kubernetes specs from [var/specs](var/specs)
 
@@ -40,17 +39,18 @@ Helm       | Kubernetes package manager    | <https://helm.sh>
 
 Deployment in a single VM instance, cf. [minikube](docs/minikube.md).
 
+### Kubeadm
+
 [kubeadm][06] provides a simple CLI to create single master Kubernetes clusters
-(alternatives: [kubespray][07], [Gravity][12], [from scratch][08], 
-[Rnacher RKE][13]):
 
 ```bash
-# VM instance for the admin node
+# start a VM instance for the admin node
 vm shadow $K8S_VM_IMAGE $K8S_ADMIN_NODE
 # adjust the VM instance configuration
 vm config $K8S_ADMIN_NODE --vcpu 2 --memory 2
+# restart the VM instance with the new configuration
 vm redefine $K8S_ADMIN_NODE
-# initialize the Kubernetes master
+# initialize Kubernetes
 vm exec $K8S_ADMIN_NODE --root -- \
         kubeadm init --pod-network-cidr=192.168.0.0/16
 # make the devops user Kubernetes admin
@@ -72,8 +72,9 @@ vm exec $K8S_ADMIN_NODE -- \
 Add more VM instances to create a Kubernetes cluster
 
 ```bash
+# list of VM instances to use
 NODES=lxcc0[2-3],lxb00[1-4]
-# start the rest of the cluster nodes
+# start all cluster nodes
 vn shadow $K8S_VM_IMAGE
 # connect nodes with the cluster
 vn cmd k8s-vm-join {}
