@@ -11,7 +11,7 @@ Use the following shell functions:
 - [k8s-vm-join()][01] - Join a given VM instance with the Kubernetes cluster
 - [k8s-upload-specs()][01] - Upload Kubernetes specs from [var/specs](var/specs)
 
-The shell script ↴ [source_me.sh][source_me.sh] adds the tool-chain in this 
+The shell script ↴ [source_me.sh](source_me.sh) adds the tool-chain in this 
 repository to your shell environment:
 
 ```bash
@@ -51,22 +51,29 @@ vm redefine $K8S_ADMIN_NODE
 # initialize the Kubernetes master
 vm exec $K8S_ADMIN_NODE --root -- \
         kubeadm init --pod-network-cidr=192.168.0.0/16
-```
-
-This example uses the [kube-router][02] as pod network.
-
-```bash
-# devops user becomes admins
+# make the devops user Kubernetes admin
 vm exec $K8S_ADMIN_NODE -- '
         mkdir -p $HOME/.kube
         sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
         sudo chown $(id -u):$(id -g) $HOME/.kube/config
 '
+```
+
+This example uses the [kube-router][02] as pod network.
+
+```bash
 # setup the pod network
 vm exec $K8S_ADMIN_NODE -- \
         kubectl apply -f https://raw.githubusercontent.com/cloudnativelabs/kube-router/master/daemonset/kubeadm-kuberouter.yaml
+```
+
+```bash
 # join all other VM instances with the cluster
-NODES=lxcc0[2-3],lxb00[1-4] vn cmd k8s-vm-join {}
+NODES=lxcc0[2-3],lxb00[1-4]
+# start the rest of the cluster nodes
+vn shadow $K8S_VM_IMAGE
+# connect nodes with the cluster
+vn cmd k8s-vm-join {}
 ```
 
 Alternatives: [kubespray][07], [Gravity][12], [from scratch][08], [Rnacher RKE][13]
