@@ -35,7 +35,7 @@ Basic Concepts:
 (basically anything that persists in the system).
 
 - Each object in Kubernetes is given a Name, provided to Kubernetes in the 
-  **deployment record**.
+  deployment record.
 - Names need to be unique within a **namespace**.
 - The **Kubernetes UID** is a unique, internal identifier for each object in 
   the system (used to differentiate between clones of the same object).

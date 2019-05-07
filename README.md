@@ -100,7 +100,7 @@ vm exec $K8S_ADMIN_NODE "
 
 ## Usage
 
-Upload all specification from this repo to the master node, and login
+Copy object specs from [var/spec](var/spec) to the master node, and login
 
 ```
 k8s-upload-specs && vm exec $K8S_ADMIN_NODE
