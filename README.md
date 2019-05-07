@@ -38,9 +38,9 @@ Helm       | Kubernetes package manager    | <https://helm.sh>
 
 Deployment in a single VM instance, cf. [minikube](docs/minikube.md).
 
-### Kubeadm
-
 [kubeadm][06] provides a simple CLI to create single master Kubernetes clusters
+
+### Master
 
 ```bash
 # start a VM instance for the admin node
@@ -60,13 +60,15 @@ vm exec $K8S_ADMIN_NODE -- '
 '
 ```
 
-This example uses the [kube-router][02] as pod network.
+This example uses the kube-router [kuber] as pod network.
 
 ```bash
 # setup the pod network
 vm exec $K8S_ADMIN_NODE -- \
         kubectl apply -f https://raw.githubusercontent.com/cloudnativelabs/kube-router/master/daemonset/kubeadm-kuberouter.yaml
 ```
+
+### Nodes
 
 Add more VM instances to create a Kubernetes cluster
 
@@ -86,13 +88,28 @@ vm exec $K8S_ADMIN_NODE --root -- \
 # execute the join command on all nodes
 vn exec -r "kubeadm join 10.1.1.9:6443 --token...."
 ```
+```
+>>> vm exec $K8S_ADMIN_NODE  kubectl get nodes
+NAME     STATUS   ROLES    AGE     VERSION
+lxb001   Ready    <none>   26m     v1.14.1
+lxb002   Ready    <none>   22m     v1.14.1
+lxb003   Ready    <none>   19m     v1.14.1
+lxb004   Ready    <none>   5m2s    v1.14.1
+lxcc01   Ready    master   65m     v1.14.1
+lxcc02   Ready    <none>   4m58s   v1.14.1
+lxcc03   Ready    <none>   4m42s   v1.14.1
+```
 
-Install the Kubernetes Dashboard:
+### Dashboard
+
+
+Install the Kubernetes Dashboard [webui] on the master node:
 
 ```bash
-kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
-kubectl get deployment,service --namespace=kube-system kubernetes-dashboard
-sudo kubectl proxy --address="$(hostname -i)" -p 443 --accept-hosts='^*$'
+vm exec $K8S_ADMIN_NODE "
+        kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/recommended/kubernetes-dashboard.yaml
+        sudo kubectl proxy --address=\$(hostname -i) -p 8001 --accept-hosts='^*$'
+"
 ```
 
 ## Usage
@@ -159,7 +176,6 @@ Document                       | Description
 
 [00]: https://github.com/vpenso/vm-tools
 [01]: var/aliases/k8s.sh
-[02]: https://github.com/cloudnativelabs/kube-router/blob/master/docs/kubeadm.md
 [03]: https://kubernetes.io/docs/concepts/workloads/pods/pod
 [04]: https://kubernetes.io/docs/concepts/architecture/nodes
 [05]: https://kubernetes.io/docs/concepts/workloads/controllers/deployment
@@ -171,3 +187,12 @@ Document                       | Description
 [11]: http://nginx.org/en/docs/
 [12]: https://github.com/gravitational/gravity
 [13]: https://github.com/rancher/rke
+
+# References
+
+[webui] Web-based Kubernetes user interface  
+https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/
+
+[kuber] Kube-router for Kubernetes networking  
+https://github.com/cloudnativelabs/kube-router
+
