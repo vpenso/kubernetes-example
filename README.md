@@ -100,7 +100,7 @@ vm exec $K8S_ADMIN_NODE "
 
 ## Usage
 
-Copy object specs from [var/spec](var/spec) to the master node, and login
+Copy object specs from [var/specs](var/specs) to the master node, and login
 
 ```
 k8s-upload-specs && vm exec $K8S_ADMIN_NODE
@@ -116,12 +116,7 @@ kubectl get services            # list service running on the cluster
 kubectl get pods --namespace=kube-system
 ```
 
-Document                       | Description
--------------------------------|-----------------------------------------------
-[docs/jobs.md](docs/jobs.md)   | Oneshot-, parallel- and cron-jobs in more detail
-[docs/helm.md](docs/helm.md)   | Describes the **Helm** Kubernetes package manager
-
-### Deployment
+### Example Deployment
 
 Use a Kubernetes deployment [deploy] to start three Nginx instances:
 

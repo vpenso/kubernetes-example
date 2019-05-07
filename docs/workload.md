@@ -1,3 +1,13 @@
+# Workloads
+
+Types of workloads supported by Kubernetes:
+
+Type                | Description
+--------------------|-----------------------------------
+Deployment          | Regularly updated, long running applications
+Jobs                | Short running tasks
+DaemonSets          | Programs run on every node in the cluster
+
 # Jobs
 
 Short-lived, one-off tasks, running until (successful) termination:
