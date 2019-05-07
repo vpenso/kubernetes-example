@@ -93,16 +93,6 @@ k8s-vm-bootstrap() {
 }
 
 #
-# print the join command on a node with admin access to the cluster,
-# and execute it on the target VM instance
-#
-k8s-vm-join() {
-        local instance=$1
-        vm exec $instance --root \
-                "$(vm exec $K8S_ADMIN_NODE --root -- kubeadm token create --print-join-command)"
-}
-
-#
 # upload all Kubernetes specs to the home-directory of the devops
 # user on the Kubernetes admin node
 #

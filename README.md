@@ -7,7 +7,6 @@ File                     | Description
 Use the following shell functions:
 
 - [k8s-vm-image()][01] - Kickstart a CentOS VM image with Kubernetes prerequisites from [var/centos/7/kickstart.cfg](var/centos/7/kickstart.cfg)
-- [k8s-vm-join()][01] - Join a given VM instance with the Kubernetes cluster
 - [k8s-upload-specs()][01] - Upload Kubernetes specs from [var/specs](var/specs)
 
 The shell script ↴ [source_me.sh](source_me.sh) adds the tool-chain in this 
@@ -76,8 +75,16 @@ Add more VM instances to create a Kubernetes cluster
 NODES=lxcc0[2-3],lxb00[1-4]
 # start all cluster nodes
 vn shadow $K8S_VM_IMAGE
-# connect nodes with the cluster
-vn cmd k8s-vm-join {}
+```
+
+Connect nodes with the cluster
+
+```bash
+# get the join command
+vm exec $K8S_ADMIN_NODE --root -- \
+        kubeadm token create --print-join-command | tr -s ' '
+# execute the join command on all nodes
+vn exec -r "kubeadm join 10.1.1.9:6443 --token...."
 ```
 
 Install the Kubernetes Dashboard:
