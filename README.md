@@ -88,20 +88,6 @@ vm exec $K8S_ADMIN_NODE --root -- \
 # execute the join command on all nodes
 vn exec -r "kubeadm join 10.1.1.9:6443 --token...."
 ```
-```
->>> vm exec $K8S_ADMIN_NODE  kubectl get nodes
-NAME     STATUS   ROLES    AGE     VERSION
-lxb001   Ready    <none>   26m     v1.14.1
-lxb002   Ready    <none>   22m     v1.14.1
-lxb003   Ready    <none>   19m     v1.14.1
-lxb004   Ready    <none>   5m2s    v1.14.1
-lxcc01   Ready    master   65m     v1.14.1
-lxcc02   Ready    <none>   4m58s   v1.14.1
-lxcc03   Ready    <none>   4m42s   v1.14.1
-```
-
-### Dashboard
-
 
 Install the Kubernetes Dashboard [webui] on the master node:
 
@@ -114,15 +100,41 @@ vm exec $K8S_ADMIN_NODE "
 
 ## Usage
 
+Upload all specification from this repo to the master node, and login
 
-Following example uses a [deployment][05] to start three [Nginx][11] instances:
+```
+k8s-upload-specs && vm exec $K8S_ADMIN_NODE
+```
+
+Basic command line:
 
 ```bash
-# upload all specification from this repo to the admin node, and login
->>> k8s-upload-specs && vm exec $K8S_ADMIN_NODE
+kubectl get nodes               # list cluster nodes
+kubectl get events              # list cluster events
+kubectl get services            # list service running on the cluster
+# list kubernetes system resources
+kubectl get pods --namespace=kube-system
+```
+
+Document                       | Description
+-------------------------------|-----------------------------------------------
+[docs/jobs.md](docs/jobs.md)   | Oneshot-, parallel- and cron-jobs in more detail
+[docs/helm.md](docs/helm.md)   | Describes the **Helm** Kubernetes package manager
+
+### Deployment
+
+Use a Kubernetes deployment [deploy] to start three Nginx instances:
+
+```bash
 # deploy the specification
 >>> kubectl create -f ~/deployment/nginx.yaml
 deployment.apps/nginx-deployment created
+# pods started for this deployment
+>>> kubectl get pods
+NAME                               READY   STATUS    RESTARTS   AGE
+nginx-deployment-6dd86d77d-crms7   1/1     Running   0          4m
+nginx-deployment-6dd86d77d-swft5   1/1     Running   0          4m
+nginx-deployment-6dd86d77d-wbtl6   1/1     Running   0          4m
 # show deployment state
 >>> kubectl get deployments
 NAME               DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
@@ -167,18 +179,11 @@ nginx-deployment-67594d6bf6-skvz8   1/1       Running   0          4m        192
 nginx-deployment-67594d6bf6-xj4nz   1/1       Running   0          1h        192.168.4.12   lxb004
 ```
 
-Further reading:
-
-Document                       | Description
--------------------------------|-----------------------------------------------
-[docs/jobs.md](docs/jobs.md)   | Oneshot-, parallel- and cron-jobs in more detail
-[docs/helm.md](docs/helm.md)   | Describes the **Helm** Kubernetes package manager
 
 [00]: https://github.com/vpenso/vm-tools
 [01]: var/aliases/k8s.sh
 [03]: https://kubernetes.io/docs/concepts/workloads/pods/pod
 [04]: https://kubernetes.io/docs/concepts/architecture/nodes
-[05]: https://kubernetes.io/docs/concepts/workloads/controllers/deployment
 [06]: https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm "kubeadm documentation"
 [07]: https://github.com/kubernetes-incubator/kubespray "kubespray on github"
 [08]: https://kubernetes.io/docs/setup/scratch "kubernetes from scratch documentation"
@@ -196,3 +201,5 @@ https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/
 [kuber] Kube-router for Kubernetes networking  
 https://github.com/cloudnativelabs/kube-router
 
+[deploy] Kubernetes Deployments  
+https://kubernetes.io/docs/concepts/workloads/controllers/deployment

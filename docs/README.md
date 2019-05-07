@@ -24,16 +24,28 @@ bootstrapping, not about provisioning machines.
 
 Basic components (concepts):
 
-- Master - Central control point (unified view of the cluster).
-  Master nodes control multiple minions.
-- Nodes - Run one or more pods delegated by the master.
-  Application-specific “virtual host” in a containerized environment.
-- Pods - Smallest deployable unit (created, scheduled, and managed).
+- **Master** - Central control point (unified view of the cluster).
+  Master nodes control multiple (minion) nodes.
+- **Nodes** - Run one or more pods delegated by the master.
+- **Pods** - Smallest deployable unit (created, scheduled, and managed).
   Logical collection of containers that belong to an application.
-- Volume - Location where containers read/write data (from/to a storage back-end)
-- Service - Endpoint that provides load balancing across a pod replicated group.
-- Label - Key/value pair used for service discovery by the replication
-  controller.
+- **Volume** - Location where containers read/write data (from/to a storage back-end)
+- **Service** - Endpoint that provides load balancing across a pod replicated group.
+
+Kubernetes **objects** used to define the desired state of the Kubernetes system
+(basically anything that persists in the system).
+
+- Each object in Kubernetes is given a Name, provided to Kubernetes in the 
+  **deployment record**.
+- Names need to be unique within a namespace.
+- The Kubernetes **UID** is a unique, internal identifier for each object in 
+  the system (used to differentiate between clones of the same object).
+
+**Labels** are key-value pairs used to identify and describe objects:
+
+- An object can have many labels (only on of each type)
+- A way for users to organize and map the objects in the system
+- Typically used to group Pods to perform an action on all
 
 ### Master
 
@@ -70,14 +82,20 @@ Runs on top of the container runtime (i.e. Docker, containerd)
 
 ### Pods
 
-Runnable unit of work, scheduled to worker nodes (the atom of scheduling &
-placement):
+Basic unit of organization in Kubernetes (the atom of scheduling & placement):
 
-- Can be one container, or multiple **tightly coupled containers** & volumes
-- **Shared network namespace** (communicate via localhost, share IPC)
-- Considered to be **ephemeral** rather than durable entities 
-- Managed life-cycle, bound to a node (restart in place)
-- A replication controller schedules/manages multiple copies of a pod
+- Everything in a Pod will be deployed together, at the same time, 
+  in the same location (on a worker node selected by a scheduler)
+- Can be one container, or multiple tightly coupled containers (and volumes)
+- The Pod shares a network namespace to the container(s)
+  - Multiple containers within a single Pod share an IP address
+  - Containers within a Pod see each other through localhost (for IPC)
+- Pods have a managed life-cycle, bound to a node (restart in place)
+- Pods have a unique specifications (optimized for the container in the Pod)
+
+Pods considered to be **ephemeral** rather than durable entities 
+
+A replication controller schedules/manages multiple copies of a pod.
 
 ### Service
 
@@ -86,6 +104,10 @@ Abstraction to define a set of Pods and a policy to access them:
 - Services find their group of pods using labels
 - Is a config unit for the proxies running on a node
 - Provides an endpoint for load balancing accross the replication group
+
+
+
+
 
 # Reference
 
