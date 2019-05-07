@@ -9,7 +9,7 @@ Deploy Kubernetes on physical infrastructure requires:
   - The IP that a container sees itself as is the same IP that others see it as
   - Can be layer 3 routed, or a overlay network (SDN).
 
-Kubernetes Setup - Custom Solutions [3]:
+Kubernetes Setup - Custom Solutions [setup]:
 
 > If you already have a way to configure hosting resources, use kubeadm to
 > bring up a cluster with a single command per machine.
@@ -20,32 +20,64 @@ bootstrapping, not about provisioning machines.
 - Supports life-cycle mangement (updatem downgrade, monitoring)
 - Expected to be used by configuration management systems
 
-## Architecture
+## Overview
 
-Basic components (concepts):
+Basic Concepts:
 
 - **Master** - Central control point (unified view of the cluster).
   Master nodes control multiple (minion) nodes.
-- **Nodes** - Run one or more pods delegated by the master.
-- **Pods** - Smallest deployable unit (created, scheduled, and managed).
-  Logical collection of containers that belong to an application.
+- **Node** - Runs one or more pods delegated by the master.
+- **Pod** - Smallest deployable unit (created, scheduled, and managed).
 - **Volume** - Location where containers read/write data (from/to a storage back-end)
-- **Service** - Endpoint that provides load balancing across a pod replicated group.
+- **Service** - Endpoint that provides load balancing across a pod replication group.
 
-Kubernetes **objects** used to define the desired state of the Kubernetes system
+**Kubernetes objects** used to define the desired state of the system
 (basically anything that persists in the system).
 
 - Each object in Kubernetes is given a Name, provided to Kubernetes in the 
   **deployment record**.
-- Names need to be unique within a namespace.
-- The Kubernetes **UID** is a unique, internal identifier for each object in 
+- Names need to be unique within a **namespace**.
+- The **Kubernetes UID** is a unique, internal identifier for each object in 
   the system (used to differentiate between clones of the same object).
 
 **Labels** are key-value pairs used to identify and describe objects:
 
 - An object can have many labels (only on of each type)
 - A way for users to organize and map the objects in the system
-- Typically used to group Pods to perform an action on all
+- Typically used to identify a group of Pods to perform an action on all
+
+### Objects
+
+Persistent entities in the Kubernetes system representing the state of the cluster.
+
+* Specifically objects describe:
+  - Running containerized applications on all nodes.
+  - Available resources and operational policies of/for applications.
+* “record of intent” - once an object is created, Kubernetes ensure its exists.
+* Create, modify, or delete objects using the **Kubernetes API**.
+
+The Kubernetes API is accessible via:
+
+* The `kubectl` command-line interface
+* Using the REST API via a command line (`curl`, `wget`) or a web UI
+* Using a client programming library
+
+An object includes two nested object fields:
+
+* The object **spec** describes the desired state for the object 
+* The object **status** describes the actual state of the object
+
+Typically an object is describe with a YAML `.yaml` file including following
+required filed:
+
+Field           | Description
+----------------|---------------------------------
+`apiVersion`    | version of the Kubernetes API
+`kind`          | kind of object (i.e. Deployment)
+`metadata`      | including a **name** string, **UID**, and optional **namespace**
+`spec`          | contains nested fields specific to that object
+
+The `spec` format is described in the Kubernetes API Reference [api].
 
 ### Master
 
@@ -85,11 +117,11 @@ Runs on top of the container runtime (i.e. Docker, containerd)
 Basic unit of organization in Kubernetes (the atom of scheduling & placement):
 
 - Everything in a Pod will be deployed together, at the same time, 
-  in the same location (on a worker node selected by a scheduler)
+  in the same location
 - Can be one container, or multiple tightly coupled containers (and volumes)
 - The Pod shares a network namespace to the container(s)
-  - Multiple containers within a single Pod share an IP address
-  - Containers within a Pod see each other through localhost (for IPC)
+  - Multiple **containers within a single Pod share an IP address**
+  - Containers within a Pod **see each other through localhost** (for IPC)
 - Pods have a managed life-cycle, bound to a node (restart in place)
 - Pods have a unique specifications (optimized for the container in the Pod)
 
@@ -101,30 +133,23 @@ A replication controller schedules/manages multiple copies of a pod.
 
 Abstraction to define a set of Pods and a policy to access them:
 
-- Services find their group of pods using labels
-- Is a config unit for the proxies running on a node
+- Services find their associated group of pods using labels
 - Provides an endpoint for load balancing accross the replication group
-
+- Is a config unit for the proxies running on a node
 
 
 
 
 # Reference
 
-[1] Kubernetes Documentation  
-https://kubernetes.io/docs/home/
+[api] Kubernetes API Overview & Reference  
+https://kubernetes.io/docs/reference/using-api/api-overview  
+https://kubernetes.io/docs/reference/#api-reference
 
-[2] Awesome Kubernetes   
-https://github.com/ramitsurana/awesome-kubernetes
+[docs] Kubernetes Documentation  
+https://kubernetes.io/docs/home
 
-[3] Kubernetes Setup - Custom Solution  
+[setup] Kubernetes Setup - Custom Solution  
 https://kubernetes.io/docs/setup/pick-right-solution/#custom-solutions
 
-[4] Kubeadm, GitHub  
-https://github.com/kubernetes/kubeadm
 
-[5] Installing Kubeadm  
-https://kubernetes.io/docs/setup/independent/install-kubeadm/
-
-[6] Deep Dive: Cluster Lifecycle SIG (kubeadm)  
-https://www.youtube.com/watch?v=tAA0Hlag2n0
