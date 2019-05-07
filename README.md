@@ -112,8 +112,9 @@ Basic command line:
 kubectl get nodes               # list cluster nodes
 kubectl get events              # list cluster events
 kubectl get services            # list service running on the cluster
-# list kubernetes system resources
+kubectl get pods                # list pods in the cluster
 kubectl get pods --namespace=kube-system
+kubectl describe pod <name>     # show details for a given pod
 ```
 
 ### Example Deployment
