@@ -1,3 +1,12 @@
+List of components used in this project:
+
+Component  | Description                   | Cf.
+-----------|-------------------------------|-----------------------
+CentOS 7   | Operating System              | <https://centos.org>
+Docker     | Container Run-time            | <https://docker.com>
+Kubernetes | Container Orchestration       | <https://kubernetes.io>
+Helm       | Kubernetes package manager    | <https://helm.sh>
+
 # Kubernetes Example
 
 File                     | Description
@@ -27,18 +36,18 @@ ls -1 $VM_IMAGE_PATH/$K8S_VM_IMAGE
 
 ## Deployment
 
-List of components used in this project:
+> If you already have a way to configure hosting resources, use kubeadm to
+> bring up a cluster with a single command per machine.
 
-Component  | Description                   | Cf.
------------|-------------------------------|-----------------------
-CentOS 7   | Operating System              | <https://centos.org>
-Docker     | Container Run-time            | <https://docker.com>
-Kubernetes | Container Orchestration       | <https://kubernetes.io>
-Helm       | Kubernetes package manager    | <https://helm.sh>
+https://kubernetes.io/docs/setup/pick-right-solution/#custom-solutions
 
-Deployment in a single VM instance, cf. [minikube](docs/minikube.md).
+kubeadm gets a minimum viable cluster up and running, cares only about 
+bootstrapping, not about provisioning machines. 
 
-[kubeadm][06] provides a simple CLI to create single master Kubernetes clusters
+- Supports life-cycle mangement (update, downgrade, monitoring)
+- Expected to be used by configuration management systems
+
+https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm
 
 ### Master
 
@@ -181,7 +190,6 @@ nginx-deployment-67594d6bf6-xj4nz   1/1       Running   0          1h        192
 [01]: var/aliases/k8s.sh
 [03]: https://kubernetes.io/docs/concepts/workloads/pods/pod
 [04]: https://kubernetes.io/docs/concepts/architecture/nodes
-[06]: https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm "kubeadm documentation"
 [07]: https://github.com/kubernetes-incubator/kubespray "kubespray on github"
 [08]: https://kubernetes.io/docs/setup/scratch "kubernetes from scratch documentation"
 [09]: https://github.com/kelseyhightower/kubernetes-the-hard-way "kubernetes the hard way"

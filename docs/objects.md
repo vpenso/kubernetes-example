@@ -67,9 +67,13 @@ Imperative commands (operates directly on live objects in a cluster):
 # run an instance of the nginx container by creating a deployment object
 kubectl create deployment nginx --image nginx
 # prints basic information about matching objects
-kubectl get deployments/nginx
+kubectl get deployment nginx
+kubectl get deployment nginx -o yaml
+kubectl get deployment nginx --show-labels
 # aggregated detailed information about matching objects
 kubectl describe deployment nginx
+# list pods for a given label
+kubectl get pods --output wide --selector=app=nginx
 # delete an object from a cluster with delete <type>/<name>
 kubectl delete deployment/nginx
 ```

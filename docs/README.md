@@ -1,16 +1,3 @@
-# Kubernetes
-
-Kubernetes Setup - Custom Solutions [setup]:
-
-> If you already have a way to configure hosting resources, use kubeadm to
-> bring up a cluster with a single command per machine.
-
-kubeadm gets a minimum viable cluster up and running, cares only about 
-bootstrapping, not about provisioning machines. 
-
-- Supports life-cycle mangement (updatem downgrade, monitoring)
-- Expected to be used by configuration management systems
-
 ## Overview
 
 Basic Concepts:
@@ -37,7 +24,7 @@ Basic Concepts:
 - A way for users to organize and map the objects in the system
 - Typically used to identify a group of Pods to perform an action on all
 
-### Master
+## Master
 
 Provide the cluster’s control plane:
 
@@ -61,7 +48,51 @@ Controllers:
   - Allows dynamical scaling of the number of replicas
   - Support the concept of rolling updates
 
-### Nodes
+
+
+
+## Pods
+
+Basic unit of organization in Kubernetes (the atom of scheduling & placement):
+
+* Containers are designed to run only a single process per container 
+  (unless the process itself spawns child processes)
+* Pods **bind containers together** and manage them as a single unit
+* Pods can be single container, typically multiple tightly coupled containers
+
+Pods considered to be **ephemeral** rather than durable entities.
+
+* Everything in a Pod will be deployed together, at the same time and location
+* Pods have a managed life-cycle, bound to a node (restart in place)
+* Pods have a unique specifications (optimized for the container in the Pod)
+
+### Shared Resources
+
+Containers inside a Pod share certain resources (the same set of Linux namespaces)
+
+Containers of a pod run under the same Network and UTS namespaces
+
+* Share the same hostname and network interfaces and **IP address**
+* Run under the **same IPC namespace** (port space)
+  - Can communicate through `localhost` (loopback network interface)
+  - Containers within a Pod can have port conflicts
+* Can also share the same PID namespace (not enabled by default)
+* The filesystem of each container is fully isolated from other containers
+
+### Inter-Pod Network
+
+All pods in a Kubernetes cluster reside in a single **flat, shared, 
+network-address** space (IPs are clustre-scoped):
+
+* All containers can communicate with all other containers without NAT
+* All nodes can communicate with all containers (and vice-versa) without NAT
+* The IP that a container sees itself as is the same IP that others see it as
+
+Pods communicate across a flat (NAT-less) network like computers on a LAN, 
+regardless of the underlying inter-node network topology. Usually build with
+an SDN (Software-Defined Network) layer (aka overlay-network).
+
+## Nodes
 
 Run pods, provide the Kubernetes runtime environment:
 
@@ -70,23 +101,10 @@ Run pods, provide the Kubernetes runtime environment:
 
 Runs on top of the container runtime (i.e. Docker, containerd)
 
-### Service
+## Service
 
 Abstraction to define a set of Pods and a policy to access them:
 
 - Services find their associated group of pods using labels
 - Provides an endpoint for load balancing accross the replication group
 - Is a config unit for the proxies running on a node
-
-
-
-
-# Reference
-
-[docs] Kubernetes Documentation  
-https://kubernetes.io/docs/home
-
-[setup] Kubernetes Setup - Custom Solution  
-https://kubernetes.io/docs/setup/pick-right-solution/#custom-solutions
-
-
