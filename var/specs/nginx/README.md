@@ -1,4 +1,40 @@
 
+## Pod
+
+```bash
+# create a pod from a configuration file
+>>> kubectl create -f pod.yaml
+```
+
+Investigate the pod state, hosting node and pod IP address:
+
+```bash
+>>> kubectl get pod nginx-simple --output wide
+NAME           READY   STATUS    RESTARTS   AGE   IP            NODE     NOMINATED NODE   READINESS GATES
+nginx-simple   1/1     Running   0          59s   192.168.2.5   lxb002   <none>           <none>
+>>> kubectl describe pod nginx-simple | grep -e ^Node: -e ^IP:
+Node:               lxb002/10.1.1.16
+IP:                 192.168.2.5
+>>> kubectl get pod nginx-simple -o yaml | grep IP
+  hostIP: 10.1.1.16
+  podIP: 192.168.2.5
+# send a network package
+>>> ping -c 3 192.168.2.5
+# query the nginx server
+>>> curl http://192.168.2.5
+```
+
+Accessing the container:
+
+```bash
+# run a command in the container
+kubectl exec nginx-simple cat /etc/nginx/nginx.conf
+# start an interactive shell in the container
+kubectl exec nginx-simple -it -- bash
+```
+
+## Deployment
+
 ```bash
 # deploy the specification
 >>> kubectl create -f deployment.yaml
