@@ -1,14 +1,5 @@
 # Kubernetes
 
-Deploy Kubernetes on physical infrastructure requires:
-
-* Service to provision bare-metal nodes (installing the operating system)
-* **IPs are clustre-scoped**:
-  - All containers can communicate with all other containers without NAT
-  - All nodes can communicate with all containers (and vice-versa) without NAT
-  - The IP that a container sees itself as is the same IP that others see it as
-  - Can be layer 3 routed, or a overlay network (SDN).
-
 Kubernetes Setup - Custom Solutions [setup]:
 
 > If you already have a way to configure hosting resources, use kubeadm to
@@ -78,23 +69,6 @@ Run pods, provide the Kubernetes runtime environment:
 - `kube-proxy` - Manages network on the host to perform connection forwarding.
 
 Runs on top of the container runtime (i.e. Docker, containerd)
-
-### Pods
-
-Basic unit of organization in Kubernetes (the atom of scheduling & placement):
-
-- Everything in a Pod will be deployed together, at the same time, 
-  in the same location
-- Can be one container, or multiple tightly coupled containers (and volumes)
-- The Pod shares a network namespace to the container(s)
-  - Multiple **containers within a single Pod share an IP address**
-  - Containers within a Pod **see each other through localhost** (for IPC)
-- Pods have a managed life-cycle, bound to a node (restart in place)
-- Pods have a unique specifications (optimized for the container in the Pod)
-
-Pods considered to be **ephemeral** rather than durable entities 
-
-A replication controller schedules/manages multiple copies of a pod.
 
 ### Service
 
