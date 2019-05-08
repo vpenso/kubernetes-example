@@ -114,6 +114,7 @@ kubectl get events              # list cluster events
 kubectl get services            # list service running on the cluster
 kubectl get pods                # list pods in the cluster
 kubectl get pods --namespace=kube-system
+kubectl get pods --all-namespaces
 kubectl describe pod <name>     # show details for a given pod
 ```
 

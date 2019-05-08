@@ -46,39 +46,6 @@ Basic Concepts:
 - A way for users to organize and map the objects in the system
 - Typically used to identify a group of Pods to perform an action on all
 
-### Objects
-
-Persistent entities in the Kubernetes system representing the state of the cluster.
-
-* Specifically objects describe:
-  - Running containerized applications on all nodes.
-  - Available resources and operational policies of/for applications.
-* “record of intent” - once an object is created, Kubernetes ensure its exists.
-* Create, modify, or delete objects using the **Kubernetes API**.
-
-The Kubernetes API is accessible via:
-
-* The `kubectl` command-line interface
-* Using the REST API via a command line (`curl`, `wget`) or a web UI
-* Using a client programming library
-
-An object includes two nested object fields:
-
-* The object **spec** describes the desired state for the object 
-* The object **status** describes the actual state of the object
-
-Typically an object is describe with a YAML `.yaml` file including following
-required filed:
-
-Field           | Description
-----------------|---------------------------------
-`apiVersion`    | version of the Kubernetes API
-`kind`          | kind of object (i.e. Deployment)
-`metadata`      | including a **name** string, **UID**, and optional **namespace**
-`spec`          | contains nested fields specific to that object
-
-The `spec` format is described in the Kubernetes API Reference [api].
-
 ### Master
 
 Provide the cluster’s control plane:
@@ -141,10 +108,6 @@ Abstraction to define a set of Pods and a policy to access them:
 
 
 # Reference
-
-[api] Kubernetes API Overview & Reference  
-https://kubernetes.io/docs/reference/using-api/api-overview  
-https://kubernetes.io/docs/reference/#api-reference
 
 [docs] Kubernetes Documentation  
 https://kubernetes.io/docs/home
