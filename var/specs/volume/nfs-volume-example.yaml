@@ -1,0 +1,25 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: nfs-volume-example
+spec:
+  volumes:
+    - name: nfs
+      nfs:
+        server: 10.96.237.49 # change this!!!
+        path: /exports
+  containers:
+    - name: debian-container1
+      volumeMounts:
+        - name: nfs
+          mountPath: /opt
+      image: debian:stable
+      command: ["/bin/sh"]
+      args: ["-c", "sleep 10000"]
+    - name: debian-container2
+      volumeMounts:
+        - name: nfs
+          mountPath: /opt
+      image: debian:stable
+      command: ["/bin/sh"]
+      args: ["-c", "sleep 10000"]

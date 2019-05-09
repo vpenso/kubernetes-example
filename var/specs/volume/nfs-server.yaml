@@ -1,0 +1,31 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: nfs-service
+spec:
+  selector:
+    role: nfs
+  ports:
+    - name: nfs
+      port: 2049
+      protocol: TCP
+    - name: rpcbind
+      port: 111
+      protocol: UDP
+
+---
+
+kind: Pod
+apiVersion: v1
+metadata:
+  name: nfs-server
+  labels:
+    role: nfs
+spec:
+  containers:
+    - name: nfs-server-container
+      image: cpuguy83/nfs-server
+      securityContext:
+        privileged: true
+      args:
+        - /exports
