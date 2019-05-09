@@ -1,0 +1,23 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: shared-volume-example
+spec:
+  volumes:
+    - name: opt
+      emptyDir: {}
+  containers:
+    - name: debian-container1
+      volumeMounts:
+        - name: opt
+          mountPath: /opt
+      image: debian:stable
+      command: ["/bin/sh"]
+      args: ["-c", "sleep 10000"]
+    - name: debian-container2
+      volumeMounts:
+        - name: opt
+          mountPath: /opt
+      image: debian:stable
+      command: ["/bin/sh"]
+      args: ["-c", "sleep 10000"]

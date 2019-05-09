@@ -7,7 +7,7 @@ Download and install a [binary release][03] from Github:
 ```bash
 vm ex $K8S_ADMIN_NODE -r '
         cd tmp
-        source=https://storage.googleapis.com/kubernetes-helm/helm-v2.9.1-linux-amd64.tar.gz
+        source=https://storage.googleapis.com/kubernetes-helm/helm-v2.13.1-linux-amd64.tar.gz
         curl -L $source | tar xzv --strip-components=1
         mv helm /usr/bin/
 '
@@ -68,7 +68,6 @@ grafana   ClusterIP   10.101.66.86   <none>        80/TCP    55m
 
 
 
-[01]: https://helm.sh "home page"
 [02]: https://github.com/helm/helm "source code repository"
 [03]: https://github.com/helm/helm/releases "binary releases"
 [04]: https://zero-to-jupyterhub.readthedocs.io/en/latest/setup-jupyterhub.html#setup-jupyterhub "JupyterHub on Kubernetes"

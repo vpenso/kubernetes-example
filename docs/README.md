@@ -49,6 +49,15 @@ Controllers:
   - Support the concept of rolling updates
 
 
+## Nodes
+
+Run pods, provide the Kubernetes runtime environment:
+
+- `kubelet` - Ensures pods/containers are running and healthy.
+- `kube-proxy` - Manages network on the host to perform connection forwarding.
+
+Runs on top of the container runtime (i.e. Docker, containerd)
+
 
 
 ## Pods
@@ -91,15 +100,6 @@ network-address** space (IPs are clustre-scoped):
 Pods communicate across a flat (NAT-less) network like computers on a LAN, 
 regardless of the underlying inter-node network topology. Usually build with
 an SDN (Software-Defined Network) layer (aka overlay-network).
-
-## Nodes
-
-Run pods, provide the Kubernetes runtime environment:
-
-- `kubelet` - Ensures pods/containers are running and healthy.
-- `kube-proxy` - Manages network on the host to perform connection forwarding.
-
-Runs on top of the container runtime (i.e. Docker, containerd)
 
 ## Service
 
