@@ -46,6 +46,14 @@ volume-example
 
 ### NFS
 
+Install on all nodes...
+
+```bash
+vn exec -r -- yum install -y nfs-utils
+```
+
+Deploy an NFS server and mount its export into two containers
+
 ```bash
 >>> kubectl create -f nfs-server.yaml 
 service/nfs-service created
