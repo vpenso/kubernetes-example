@@ -18,6 +18,8 @@ RDMA and IP networking in a Kubernetes cluster:
   * Bypass of the host’s kernel and operating-system
   * Pods have their own IB device mapped into the namespace
 
+## References
+
 [1] Kubernetes IPoIB/Ethernet RDMA SR-IOV Networking with ConnectX4/ConnectX5, Mellanox  
 https://community.mellanox.com/s/article/kubernetes-ipoib-ethernet-rdma-sr-iov-networking-with-connectx4-connectx5
 
