@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# cf. https://kubernetes.io/docs/tasks/tools/install-kubectl/
+
+file=/tmp/kubectl
+version=$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)
+curl --location \
+     --output $file \
+     https://storage.googleapis.com/kubernetes-release/release/$version/bin/linux/amd64/kubectl
+chmod +x $file
+mv $file /usr/local/bin/kubectl
+
+echo kubectl $version installed
+echo kubectl configuration is located at ~/.kube/config

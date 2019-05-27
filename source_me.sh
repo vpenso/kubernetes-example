@@ -21,6 +21,9 @@ echo K8S_PATH=$K8S_PATH
 unset __dir
 unset __source
 
+export PATH=$K8S_PATH/bin:$PATH
+PATH=$(echo "$PATH" | awk -v RS=':' -v ORS=":" '!a[$1]++{if (NR > 1) printf ORS; printf $a[$1]}')
+
 for file in `\ls $K8S_PATH/var/aliases/*.sh`
 do 
   source $file
